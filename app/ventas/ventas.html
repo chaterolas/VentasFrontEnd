@@ -1,0 +1,184 @@
+
+
+<hr/>
+
+<div class="btn-toolbar">
+  <div class="pull-right">
+    <button ng-click="ventasCtrl.muestraFormulario()" class="btn btn-default">
+      Nuevo Producto
+    </button>
+  </div>
+</div>  
+
+<hr/>
+
+<p ng-show="ventasCtrl.exito_nuevo" class="alert alert-success">
+  Una nueva venta fue creada exitosamente
+</p>
+
+<div class="well" ng-show="ventasCtrl.isFormularioVisible()">
+  <form name="ventasCtrl.ventasForm">
+    <div class="form-group row">
+      <label class="col-xs-1 col-form-label">Producto</label>
+      <div class="col-xs-3">
+        <input type="text" class="form-control" name="producto"
+          ng-model="ventasCtrl.producto.producto"
+          ng-required="true" ng-minlength="3" ng-maxlength="15"/>
+
+        <span class="help-block" 
+          ng-messages="ventasCtrl.ventasForm.producto.$error"
+          ng-if="ventasCtrl.showMessages('producto')">
+          <span ng-message="required">
+              <small>Campo requerido</small>
+          </span>
+
+          <span ng-message="minlength">
+              <small>Mínimo 3 caracteres</small>
+          </span>   
+
+          <span ng-message="maxlength">
+              <small>Máximo 15 caracteres</small>
+          </span>   
+        </span>
+      </div>  
+
+      <label class="col-xs-1 col-form-label">Tamaño</label> 
+      <div class="col-xs-3">
+        <select class="form-control" name="tamano"
+          ng-model="ventasCtrl.producto.tamano"
+          ng-options="x.value as x.text for x in ventasCtrl.tamanos"
+          ng-required="true">
+        </select>
+
+        <span class="help-block" 
+          ng-messages="ventasCtrl.ventasForm.tamano.$error"
+          ng-if="ventasCtrl.showMessages('tamano')">
+          <span ng-message="required">
+            <small>Campo requerido</small>
+          </span> 
+        </span>
+      </div>  
+
+      <label class="col-xs-1 col-form-label">Cantidad</label> 
+      <div class="col-xs-3">
+        <input type="number" min="1" max="1000" class="form-control" name="cantidad"
+          ng-model="ventasCtrl.producto.cantidad"
+          ng-required="true" /> 
+
+        <span class="help-block" 
+          ng-messages="ventasCtrl.ventasForm.cantidad.$error"
+          ng-if="ventasCtrl.showMessages('cantidad')">
+          <span ng-message="required">
+            <small>Campo requerido</small>
+          </span> 
+          <span ng-message="number">
+            <small>Campo numérico</small>
+          </span>
+          <span ng-message="min">
+            <small>Mínimo 1</small>
+          </span>
+          <span ng-message="max">
+            <small>Máximo 1000</small>
+          </span>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xs-1 col-form-label">Tienda</label> 
+      <div class="col-xs-3">
+        <input type="text" class="form-control" name="tienda"
+          ng-model="ventasCtrl.producto.tienda"
+          ng-required="true" ng-minlength="3" ng-maxlength="20"/>
+
+        <span class="help-block" 
+          ng-messages="ventasCtrl.ventasForm.tienda.$error"
+          ng-if="ventasCtrl.showMessages('tienda')">
+          <span ng-message="required">
+              <small>Campo requerido</small>
+          </span>
+
+          <span ng-message="minlength">
+              <small>Mínimo 3 caracteres</small>
+          </span>   
+
+          <span ng-message="maxlength">
+              <small>Máximo 20 caracteres</small>
+          </span>   
+        </span>
+      </div> 
+
+      <label class="col-xs-1 col-form-label">Precio</label> 
+      <div class="col-xs-3">
+        <input type="number" min="0" class="form-control" name="precio"
+          ng-model="ventasCtrl.producto.precio"
+          ng-required="true"/>  
+
+        <span class="help-block" 
+          ng-messages="ventasCtrl.ventasForm.precio.$error"
+          ng-if="ventasCtrl.showMessages('precio')">
+          <span ng-message="required">
+            <small>Campo requerido</small>
+          </span>
+
+          <span ng-message="min">
+            <small>Mínimo 0</small>
+          </span>   
+        </span>  
+      </div>
+    </div>
+
+    <div class="btn-toolbar">
+      <div class="pull-right">
+        <button ng-click="ventasCtrl.agregaProducto(ventasCtrl.producto)" 
+          ng-disabled="!ventasCtrl.ventasForm.$valid"
+          class="btn btn-success">
+          Agregar  
+        </button>  
+      </div>
+    </div>
+  </form>
+</div>
+
+<div>
+  <p class="alert text-right">
+    Ventas: 
+    <span ng-bind="ventasCtrl.ventas.length"></span>
+  </p>
+</div>
+
+<hr/>
+
+<div>
+  <div class="row">
+    <div class="col-md-12">
+      <form>
+        <div class="form-group">
+          <label class="control-label col-md-2">
+            Busca: 
+          </label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" 
+              ng-model="ventasCtrl.filtroPorNombre"/>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-default" ng-click="ventasCtrl.invierteOrden()">
+              Invierte ordenamiento
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <p ng-show="ventasCtrl.exito_eliminado" class="alert alert-success">
+    La venta fue eliminada exitosamente
+  </p>
+
+  <div class="row" style="margin-top: 20px;">
+    <venta-div ng-repeat="p in ventasCtrl.ventas | matches:'producto': ventasCtrl.filtroPorNombre | orderBy: ventasCtrl.dirOrden">
+    </venta-div>
+  </div>
+
+</div>

@@ -6,9 +6,8 @@ describe('myApp.view1 module', function() {
 
   describe('view1 controller', function(){
 
-    it('should ....', inject(function($controller) {
-      //spec body
-      var view1Ctrl = $controller('View1Ctrl');
+    it('should exists', inject(function($controller) {
+      var view1Ctrl = $controller('View1Ctrll');
       expect(view1Ctrl).toBeDefined();
     }));
 
