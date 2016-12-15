@@ -6,11 +6,13 @@ angular.module('myApp.ventas', [])
   .constant('base_url', 'http://localhost:3333/api/ventas')
   
   .service('URLSerivice', ['base_url', function(base_url) {
-    this.normal = function() {
+    var serv = this;
+
+    serv.normal = function() {
       return base_url;
     };
 
-    this.conParametro = function(id) {
+    serv.conParametro = function(id) {
       return base_url + "/" + id;
     };
   }])
@@ -60,7 +62,26 @@ angular.module('myApp.ventas', [])
         })
         .error(deferred.reject);
 
-       return deferred.promise;
+      return deferred.promise;
+    };
+
+    serv.edita = function(producto) {
+      var deferred = $q.defer();
+
+      $http.put(URLSerivice.conParametro(producto._id), producto)
+        .success(function(data, status, headers, config) {
+          if(data.success) {
+            for(var i=0; i<productos.length; i++) {
+              if(productos[i]._id  == producto._id) {
+                productos[i] = producto;
+              }
+            }
+          }
+          deferred.resolve(data);
+        })
+        .error(deferred.reject);
+
+      return deferred.promise;
     };
 
     serv.elimina = function(producto) {
@@ -106,7 +127,7 @@ angular.module('myApp.ventas', [])
       template: 
         '<div class="col-md-4" style="height: 250px; margin-bottom: 10px;">' +
           '<div class="panel panel-default" >' +
-            '<div class="panel-heading">' +
+            '<div class="panel-heading selectable" ng-click="ventasCtrl.seleccionaEditable(p)">' +
               '<h3 class="panel-title">{{p.producto}}</h3>' +
             '</div>' +
             '<div class="panel-body">' +
@@ -151,12 +172,10 @@ angular.module('myApp.ventas', [])
 
     ctrl.muestraFormulario = function() {
       ctrl.formularioVisible = true;
-      ctrl.exito_nuevo = false;
     };
 
     ctrl.ocultaFormulario = function() {
       ctrl.formularioVisible = false;
-      ctrl.exito_nuevo = true;
     };
 
     ctrl.invierteOrden = function() {
@@ -172,6 +191,11 @@ angular.module('myApp.ventas', [])
               && ctrl.ventasForm[control].$invalid;
     };
 
+    ctrl.seleccionaEditable = function(producto) {
+      ctrl.producto = angular.copy(producto);
+      ctrl.muestraFormulario();
+    };
+
     // Modelos
     ctrl.listaProductos = function() {
       productoModel.lista().then(function(result) {
@@ -184,13 +208,21 @@ angular.module('myApp.ventas', [])
     };
 
     ctrl.agregaProducto = function(producto) {
-      $log.debug( producto );
-      productoModel.agrega(  angular.copy(producto) )
+      productoModel.agrega( angular.copy(producto) )
         .then(function(data) {
           ctrl.listaProductos();  
           ctrl.reiniciaFormulario();
         });
     };
+
+    ctrl.editarProducto = function(producto) {
+      $log.debug( producto );
+      productoModel.edita( angular.copy(producto) )
+        .then(function(data) {
+          ctrl.listaProductos();  
+          ctrl.reiniciaFormulario();
+        });
+    }
 
     ctrl.eliminaProducto = function(producto) {
       productoModel.elimina(producto)

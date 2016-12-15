@@ -1,4 +1,9 @@
 
+<style type="text/css">
+  .selectable {
+    cursor: pointer;
+  }
+</style>
 
 <hr/>
 
@@ -19,6 +24,7 @@
 <div class="well" ng-show="ventasCtrl.isFormularioVisible()">
   <form name="ventasCtrl.ventasForm">
     <div class="form-group row">
+
       <label class="col-xs-1 col-form-label">Producto</label>
       <div class="col-xs-3">
         <input type="text" class="form-control" name="producto"
@@ -28,14 +34,13 @@
         <span class="help-block" 
           ng-messages="ventasCtrl.ventasForm.producto.$error"
           ng-if="ventasCtrl.showMessages('producto')">
+
           <span ng-message="required">
               <small>Campo requerido</small>
           </span>
-
           <span ng-message="minlength">
               <small>Mínimo 3 caracteres</small>
           </span>   
-
           <span ng-message="maxlength">
               <small>Máximo 15 caracteres</small>
           </span>   
@@ -61,7 +66,7 @@
 
       <label class="col-xs-1 col-form-label">Cantidad</label> 
       <div class="col-xs-3">
-        <input type="number" min="1" max="1000" class="form-control" name="cantidad"
+        <input type="number" min="1" class="form-control" name="cantidad"
           ng-model="ventasCtrl.producto.cantidad"
           ng-required="true" /> 
 
@@ -70,15 +75,12 @@
           ng-if="ventasCtrl.showMessages('cantidad')">
           <span ng-message="required">
             <small>Campo requerido</small>
-          </span> 
+          </span>
           <span ng-message="number">
-            <small>Campo numérico</small>
+            Tiene que ser un número
           </span>
           <span ng-message="min">
             <small>Mínimo 1</small>
-          </span>
-          <span ng-message="max">
-            <small>Máximo 1000</small>
           </span>
         </span>
       </div>
@@ -86,6 +88,7 @@
     </div>
 
     <div class="form-group row">
+
       <label class="col-xs-1 col-form-label">Tienda</label> 
       <div class="col-xs-3">
         <input type="text" class="form-control" name="tienda"
@@ -121,21 +124,39 @@
           <span ng-message="required">
             <small>Campo requerido</small>
           </span>
-
+          <span ng-message="number">
+            Tiene que ser un número
+          </span>
           <span ng-message="min">
             <small>Mínimo 0</small>
           </span>   
         </span>  
       </div>
+
     </div>
 
     <div class="btn-toolbar">
       <div class="pull-right">
-        <button ng-click="ventasCtrl.agregaProducto(ventasCtrl.producto)" 
+
+        <a ng-click="ventasCtrl.reiniciaFormulario()"
+          class="btn btn-default"
+          style="margin-right: 10px;">
+          Cancelar 
+        </a>
+
+        <button ng-if="!ventasCtrl.producto._id" 
+          ng-click="ventasCtrl.agregaProducto(ventasCtrl.producto)" 
           ng-disabled="!ventasCtrl.ventasForm.$valid"
           class="btn btn-success">
-          Agregar  
+          Crear nuevo
         </button>  
+
+        <button ng-if="ventasCtrl.producto._id" 
+          ng-click="ventasCtrl.editarProducto(ventasCtrl.producto)"
+          ng-disabled="!ventasCtrl.ventasForm.$valid"
+          class="btn btn-info">
+          Guardar cambios
+        </button>
       </div>
     </div>
   </form>
@@ -143,7 +164,7 @@
 
 <div>
   <p class="alert text-right">
-    Ventas: 
+    <strong>Ventas:</strong>
     <span ng-bind="ventasCtrl.ventas.length"></span>
   </p>
 </div>
